@@ -15,7 +15,8 @@ app = FastAPI()
 
 @app.get("/list", response_model=ListType[response.ShoppingListResponse])
 def get_all_lists(repos: Repositories = Depends(get_repositories)):
-    return repos.shopping_list_repo.get_all()
+    lists = repos.shopping_list_repo.get_all()
+    return [response.ShoppingListResponse.from_orm(list) for list in lists]
 
 @app.get("/list/{list_id}", response_model=response.ShoppingListWithItemsResponse)
 def get_list(list_id: int, repos: Repositories = Depends(get_repositories)):
@@ -30,7 +31,8 @@ def get_list(list_id: int, repos: Repositories = Depends(get_repositories)):
 
 @app.post("/list", response_model=response.ShoppingListResponse)
 def create_list(list: request.ShoppingListCreate, repos: Repositories = Depends(get_repositories)):
-    return repos.shopping_list_repo.create(list.name)
+    shopping_list = repos.shopping_list_repo.create(list.name)
+    return response.ShoppingListResponse.from_orm(shopping_list)
 
 @app.post("/list/{list_id}/item", response_model=response.ItemResponse)
 def create_item(list_id: int, item: request.ItemCreate, repos: Repositories = Depends(get_repositories)):
@@ -60,7 +62,7 @@ def update_list(list_id: int, list: request.ShoppingListUpdate, repos: Repositor
     if updated_list is None:
         raise HTTPException(status_code=404, detail="List not found")
     
-    return updated_list
+    return response.ShoppingListResponse.from_orm(updated_list)
 
 @app.put("/list/{list_id}/item/{item_id}", response_model=response.ItemResponse)
 def update_item(list_id: int, item_id: int, item: request.ItemUpdate, repos: Repositories = Depends(get_repositories)):
