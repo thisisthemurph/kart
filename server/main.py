@@ -112,6 +112,17 @@ def set_all_items_purchased_status(list_id: int, status: request.ItemBulkSetPurc
         raise HTTPException(status_code=404, detail="List not found")
     
     repos.shopping_list_repo.update_all_items_purchased_status(list_id, status.purchased)
+
+@app.post("/list/{list_id}/clone", response_model=response.ShoppingListResponse)
+def clone_list(list_id: int, repos: Repositories = Depends(get_repositories)):
+    if repos.shopping_list_repo.get_by_id(list_id) is None:
+        raise HTTPException(status_code=404, detail="List not found")
+    
+    cloned_list = repos.shopping_list_repo.clone_list(list_id)
+    if cloned_list is None:
+        raise HTTPException(status_code=500, detail="Failed to clone list")
+    
+    return response.ShoppingListResponse.from_orm(cloned_list)
     
 @app.delete("/list/{list_id}/item/{item_id}", status_code=200)
 def delete_item(list_id: int, item_id: int, repos: Repositories = Depends(get_repositories)):

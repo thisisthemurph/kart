@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Generic, Optional, List
+from typing import TypeVar, Generic
 from sqlalchemy.orm import Session
 
 T = TypeVar('T')
@@ -9,11 +9,11 @@ class BaseRepository(ABC, Generic[T]):
         self.db = db
     
     @abstractmethod
-    def get_by_id(self, id: int) -> Optional[T]:
+    def get_by_id(self, id: int) -> T | None:
         pass
     
     @abstractmethod
-    def get_all(self) -> List[T]:
+    def get_all(self) -> list[T]:
         pass
     
     def create(self, entity: T) -> T:

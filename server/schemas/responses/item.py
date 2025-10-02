@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from typing import Optional
 from db.models import Item as ItemModel
 from schemas.responses.category import CategoryObject
 
@@ -13,7 +12,7 @@ class ItemResponse(BaseModel):
     name: str
     list_id: int
     purchased: bool
-    category: Optional[CategoryObject] = None
+    category: CategoryObject | None = None
 
     @classmethod
     def from_orm(cls, item: ItemModel):
