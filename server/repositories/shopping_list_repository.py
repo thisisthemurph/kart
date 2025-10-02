@@ -1,6 +1,6 @@
 from typing import Optional, List
 from sqlalchemy.orm import Session
-from db.models import ShoppingList
+from db.models import ShoppingList, Item
 from .base_repository import BaseRepository
 
 class ShoppingListRepository(BaseRepository[ShoppingList]):
@@ -23,3 +23,10 @@ class ShoppingListRepository(BaseRepository[ShoppingList]):
             shopping_list.name = name
             return super().update(shopping_list)
         return None
+    
+    def update_all_items_purchased_status(self, list_id: int, purchased: bool) -> List[Item]:
+        items = self.db.query(Item).filter(Item.list_id == list_id).all()
+        for item in items:
+            item.purchased = purchased
+            super().update(item)
+        return items

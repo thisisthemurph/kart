@@ -14,3 +14,6 @@ class ItemUpdate(Base):
 
 class ItemSetPurchasedStatus(BaseModel):
     purchased: bool
+
+class ItemBulkSetPurchasedStatus(BaseModel):
+    purchased: bool

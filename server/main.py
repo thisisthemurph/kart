@@ -106,6 +106,13 @@ def set_item_purchased_status(list_id: int, item_id: int, status: request.ItemSe
     updated_item = item_repo.update_purchased_status(item_id, list_id, status.purchased)
     return response.ItemResponse.from_orm(updated_item)
 
+@app.patch("/list/{list_id}/items/purchased", status_code=200)
+def set_all_items_purchased_status(list_id: int, status: request.ItemBulkSetPurchasedStatus, repos: Repositories = Depends(get_repositories)):
+    if repos.shopping_list_repo.get_by_id(list_id) is None:
+        raise HTTPException(status_code=404, detail="List not found")
+    
+    repos.shopping_list_repo.update_all_items_purchased_status(list_id, status.purchased)
+    
 @app.delete("/list/{list_id}/item/{item_id}", status_code=200)
 def delete_item(list_id: int, item_id: int, repos: Repositories = Depends(get_repositories)):
     shopping_list_repo = repos.shopping_list_repo
