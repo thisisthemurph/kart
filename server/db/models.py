@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import relationship
 from db.database import Base
 
@@ -17,6 +17,7 @@ class Item(Base):
     name = Column(String, index=True)
     list_id = Column(Integer, ForeignKey("lists.id"))
     category_id = Column(Integer, ForeignKey("categories.id"))
+    purchased = Column(Boolean, default=False)
 
     list = relationship("ShoppingList", back_populates="items")
     category = relationship("Category", back_populates="items")

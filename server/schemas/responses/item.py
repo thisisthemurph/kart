@@ -12,6 +12,7 @@ class ItemResponse(BaseModel):
     id: int
     name: str
     list_id: int
+    purchased: bool
     category: Optional[CategoryObject] = None
 
     @classmethod
@@ -21,5 +22,6 @@ class ItemResponse(BaseModel):
             id=item.id, 
             name=item.name, 
             list_id=item.list_id, 
+            purchased=item.purchased,
             category=category
         )

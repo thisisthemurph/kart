@@ -86,8 +86,24 @@ def update_item(list_id: int, item_id: int, item: request.ItemUpdate, repos: Rep
     if item_repo.exists_in_list(list_id, item.name, exclude_id=item_id):
         raise HTTPException(status_code=400, detail="Item with this name already exists in the list")
     
-    # Update the item
-    updated_item = item_repo.update(item_id, list_id, item.name, item.category_id)
+    updated_item = item_repo.update(item_id, list_id, item.name, item.category_id, item.purchased)
+    return response.ItemResponse.from_orm(updated_item)
+
+@app.patch("/list/{list_id}/item/{item_id}/purchased", response_model=response.ItemResponse)
+def set_item_purchased_status(list_id: int, item_id: int, status: request.ItemSetPurchasedStatus, repos: Repositories = Depends(get_repositories)):
+    shopping_list_repo = repos.shopping_list_repo
+    item_repo = repos.item_repo
+    
+    # Check if the list exists
+    if shopping_list_repo.get_by_id(list_id) is None:
+        raise HTTPException(status_code=404, detail="List not found")
+    
+    # Check if the item exists and belongs to the list
+    if item_repo.get_by_list_and_id(list_id, item_id) is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    # Set the purchased status using the repository method
+    updated_item = item_repo.update_purchased_status(item_id, list_id, status.purchased)
     return response.ItemResponse.from_orm(updated_item)
 
 @app.delete("/list/{list_id}/item/{item_id}", status_code=200)

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 
 
 class Base(BaseModel):
@@ -9,4 +10,7 @@ class ItemCreate(Base):
     pass
 
 class ItemUpdate(Base):
-    pass
+    purchased: bool = False
+
+class ItemSetPurchasedStatus(BaseModel):
+    purchased: bool
