@@ -1,18 +1,18 @@
-import { StyleSheet, Text, View } from "react-native";
-
-const data = [];
+import Button from "@/components/button";
+import PageContainer from "@/components/page-container";
+import P from "@/components/paragraph";
+import useTheme from "@/hooks/use-theme";
 
 export default function SettingsScreen() {
+    const { toggleTheme, theme, isDarkMode } = useTheme();
+
     return (
-        <View style={styles.container}>
-            <Text>This is the settings page</Text>
-        </View>
+        <PageContainer>
+            <P>Settings</P>
+            <Button
+                onPress={toggleTheme}
+                title={`Change to ${isDarkMode() ? "light" : "dark"} mode`}
+            />
+        </PageContainer>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        padding: 16,
-        backgroundColor: "lightgray",
-    }
-});
