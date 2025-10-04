@@ -1,16 +1,17 @@
 import useTheme from "@/hooks/use-theme";
 import { Text } from "react-native";
+import { ReactNode } from "react";
 
 interface ParagraphProps {
-    children: React.ReactNode;
+    children: ReactNode;
     muted?: boolean | undefined;
 }
 
 export default function P({ children, muted }: ParagraphProps) {
-    const { colors } = useTheme();
+    const { theme } = useTheme();
 
     return (
-        <Text style={{ color: muted ? colors.textMuted : colors.text }}>
+        <Text style={{ color: muted ? theme.colors.mutedForeground : theme.colors.foreground }}>
             {children}
         </Text>
     );

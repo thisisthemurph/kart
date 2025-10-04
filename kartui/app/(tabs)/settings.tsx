@@ -4,7 +4,7 @@ import P from "@/components/paragraph";
 import useTheme from "@/hooks/use-theme";
 
 export default function SettingsScreen() {
-    const { toggleTheme, theme, isDarkMode } = useTheme();
+    const { toggleTheme, isDarkMode } = useTheme();
 
     return (
         <PageContainer>

@@ -1,4 +1,4 @@
-import useTheme, { ColorScheme } from "@/hooks/use-theme";
+import useTheme, { ShadcnTheme } from "@/hooks/use-theme";
 import React, { useMemo } from "react";
 import {
     StyleSheet,
@@ -22,8 +22,8 @@ const Button: React.FC<ButtonProps> = ({
     children,
     ...props
 }) => {
-    const { colors } = useTheme();
-    const styles = useMemo(() => createStyles(variant, colors, !!disabled), [variant, colors, disabled]);
+    const { theme } = useTheme();
+    const styles = useMemo(() => createStyles(variant, theme, !!disabled), [variant, theme, disabled]);
 
     return (
         <TouchableOpacity
@@ -38,40 +38,44 @@ const Button: React.FC<ButtonProps> = ({
     );
 };
 
-function createStyles(variant: ButtonVariant, colors: ColorScheme, disabled: boolean) {
+function createStyles(variant: ButtonVariant, theme: ShadcnTheme, disabled: boolean) {
+    const opacity = disabled ? 0.5 : 1;
+
     const variantStyles = {
         primary: {
-            backgroundColor: disabled
-                ? colors.backgrounds.disabled
-                : colors.primary,
+            backgroundColor: theme.colors.primary,
+            opacity: opacity,
         },
         secondary: {
-            backgroundColor: disabled
-                ? colors.backgrounds.disabled
-                : colors.secondary,
+            backgroundColor: theme.colors.secondary,
+            borderWidth: 1,
+            borderColor: theme.colors.border,
+            opacity: opacity,
         },
         outlined: {
-            backgroundColor: "transparent",
+            backgroundColor: theme.colors.background,
             borderWidth: 1,
-            borderColor: colors.border,
+            borderColor: theme.colors.border,
+            opacity: opacity,
         },
         ghost: {
-            backgroundColor: "transparent",
+            backgroundColor: theme.colors.background,
+            opacity: opacity,
         }
     }
 
     const textVariantStyles = {
         primary: {
-            color: disabled ? colors.textMuted : "white",
+            color: disabled ? theme.colors.secondaryForeground : theme.colors.primaryForeground,
         },
         secondary: {
-            color: disabled ? colors.textMuted : "white",
+            color: disabled ? "black" : theme.colors.secondaryForeground,
         },
         outlined: {
-            color: disabled ? colors.textMuted : colors.text,
+            color: disabled ? theme.colors.secondaryForeground : theme.colors.mutedForeground,
         },
         ghost: {
-            color: disabled ? colors.textMuted : colors.text,
+            color: disabled ? theme.colors.secondaryForeground : theme.colors.mutedForeground,
         }
     }
 

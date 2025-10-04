@@ -1,21 +1,17 @@
-import useTheme from "@/hooks/use-theme";
-import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
+import useTheme from "@/hooks/use-theme";
+import { ReactNode } from "react";
 
 interface PageContainerProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export default function PageContainer({ children }: PageContainerProps) {
-    const { colors } = useTheme();
+    const { theme } = useTheme();
 
     return (
-        <LinearGradient colors={colors.gradients.background} style={{
-            padding: 16, height: "100%"
-        }}>
-            <SafeAreaView style={{ flex: 1, gap: 8 }}>
-                {children}
-            </SafeAreaView>
-        </LinearGradient>
+        <SafeAreaView style={{ flex: 1, gap: 8, padding: 16, height: "100%", backgroundColor: theme.colors.card }}>
+            {children}
+        </SafeAreaView>
     );
 }

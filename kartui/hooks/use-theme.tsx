@@ -1,102 +1,80 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
-export interface ColorScheme {
-    bg: string;
-    surface: string;
-    text: string;
-    textMuted: string;
-    border: string;
-    primary: string;
-    secondary: string;
-    success: string;
-    warning: string;
-    danger: string;
-    shadow: string;
-    gradients: {
-        background: [string, string];
-        surface: [string, string];
-        primary: [string, string];
-        success: [string, string];
-        warning: [string, string];
-        danger: [string, string];
-        muted: [string, string];
-        empty: [string, string];
-    };
-    backgrounds: {
-        input: string;
-        editInput: string;
-        disabled: string;
-    };
-    statusBarStyle: "light-content" | "dark-content";
+export interface ShadcnTheme {
+    colors: {
+        background: string,
+        foreground: string,
+        card: string,
+        cardForeground: string,
+        popover: string,
+        popoverForeground: string,
+        primary: string,
+        primaryForeground: string,
+        secondary: string,
+        secondaryForeground: string,
+        muted: string,
+        mutedForeground: string,
+        accent: string,
+        accentForeground: string,
+        destructive: string,
+        destructiveForeground: string,
+        border: string,
+        input: string,
+    }
 }
 
-const lightColors: ColorScheme = {
-    bg: "#f8fafc",
-    surface: "#ffffff",
-    text: "#1e293b",
-    textMuted: "#b1b4b9ff",
-    border: "#e2e8f0",
-    primary: "#3b82f6",
-    secondary: "#ec8effff",
-    success: "#10b981",
-    warning: "#f59e0b",
-    danger: "#ef4444",
-    shadow: "#000000",
-    gradients: {
-        background: ["#f8fafc", "#e2e8f0"],
-        surface: ["#ffffff", "#f8fafc"],
-        primary: ["#3b82f6", "#1d4ed8"],
-        success: ["#10b981", "#059669"],
-        warning: ["#f59e0b", "#d97706"],
-        danger: ["#ef4444", "#dc2626"],
-        muted: ["#9ca3af", "#6b7280"],
-        empty: ["#f3f4f6", "#e5e7eb"],
-    },
-    backgrounds: {
-        input: "#ffffff",
-        editInput: "#ffffff",
-        disabled: "#eaeaea",
+const lightThemeVariables: ShadcnTheme = {
+    colors: {
+        background: "rgb(255 255 255)",
+        foreground: "rgb(6 8 38)",
+        card: "rgb(255 255 255)",
+        cardForeground: "rgb(6 8 38)",
+        popover: "rgb(255 255 255)",
+        popoverForeground: "rgb(6 8 38)",
+        primary: "rgb(111 66 245)",
+        primaryForeground: "rgb(236 239 244)",
+        secondary: "rgb(244 245 247)",
+        secondaryForeground: "rgb(26 30 43)",
+        muted: "rgb(244 245 247)",
+        mutedForeground: "rgb(111 117 135)",
+        accent: "rgb(244 245 247)",
+        accentForeground: "rgb(26 30 43)",
+        destructive: "rgb(255 68 68)",
+        destructiveForeground: "rgb(236 239 244)",
+        border: "rgb(231 233 236)",
+        input: "rgb(231 233 236)",
+    }
+}
 
-    },
-    statusBarStyle: "dark-content" as const,
-};
-
-const darkColors: ColorScheme = {
-    bg: "#0f172a",
-    surface: "#1e293b",
-    text: "#f1f5f9",
-    textMuted: "#94a3b8",
-    border: "#334155",
-    primary: "#60a5fa",
-    secondary: "#e4b5ffff",
-    success: "#34d399",
-    warning: "#fbbf24",
-    danger: "#f87171",
-    shadow: "#000000",
-    gradients: {
-        background: ["#0f172a", "#1e293b"],
-        surface: ["#1e293b", "#334155"],
-        primary: ["#3b82f6", "#1d4ed8"],
-        success: ["#10b981", "#059669"],
-        warning: ["#f59e0b", "#d97706"],
-        danger: ["#ef4444", "#dc2626"],
-        muted: ["#374151", "#4b5563"],
-        empty: ["#374151", "#4b5563"],
-    },
-    backgrounds: {
-        input: "#1e293b",
-        disabled: "#eaeaea",
-        editInput: "#0f172a",
-    },
-    statusBarStyle: "light-content" as const,
-};
+const darkThemeVariables: ShadcnTheme = {
+    colors: {
+        background: "rgb(23 23 23)",
+        foreground: "rgb(249 250 251)",
+        card: "rgb(23 23 23)",
+        cardForeground: "rgb(249 250 251)",
+        popover: "rgb(3 7 18)",
+        popoverForeground: "rgb(236 239 244)",
+        primary: "rgb(109 40 217)",
+        primaryForeground: "rgb(249 250 251)",
+        secondary: "rgb(39, 39, 42)",
+        secondaryForeground: "rgb(249 250 251)",
+        muted: "rgb(31 41 55)",
+        mutedForeground: "rgb(149 157 176)",
+        accent: "rgb(31 41 55)",
+        accentForeground: "rgb(249 250 251)",
+        destructive: "rgb(105 29 29)",
+        destructiveForeground: "rgb(249 250 251)",
+        border: "rgb(31 41 55)",
+        input: "rgb(31 41 55)",
+    }
+}
 
 interface ThemeContextType {
-    theme: Theme;
+    themeName: Theme;
     isDarkMode: () => boolean,
     toggleTheme: () => void;
-    colors: ColorScheme;
+    theme: ShadcnTheme;
 }
 
 const ThemeContext = createContext<undefined | ThemeContextType>(undefined);
@@ -121,14 +99,14 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         await AsyncStorage.setItem("darkMode", JSON.stringify(newTheme));
     };
 
-    const colors = currentTheme === "dark" ? darkColors : lightColors;
+    const selectedThemeVariables = currentTheme === "dark" ? darkThemeVariables : lightThemeVariables;
 
     return (
         <ThemeContext.Provider value={{
-            theme: currentTheme,
+            themeName: currentTheme,
             isDarkMode: () => currentTheme === "dark",
             toggleTheme,
-            colors,
+            theme: selectedThemeVariables,
         }}>
             {children}
         </ThemeContext.Provider>
